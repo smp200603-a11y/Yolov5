@@ -6,7 +6,7 @@ import pandas as pd
 import torch
 
 st.set_page_config(
-    page_title="Detección de Objetos en Tiempo Real",
+    page_title="Detección de Objetos en Tiempo Real,pruebaloo",
     page_icon="🔍",
     layout="wide"
 )
@@ -22,6 +22,11 @@ def load_model():
         return None
 
 st.title("🔍 Detección de Objetos en Imágenes")
+
+# 👉 AGREGADO: mostrar imagen gato.png
+imagen_gato = Image.open("gato.png")
+st.image(imagen_gato, width=300)
+
 st.markdown("Esta aplicación utiliza YOLOv5 para detectar objetos en imágenes capturadas con tu cámara.")
 
 with st.spinner("Cargando modelo YOLOv5..."):
@@ -40,14 +45,9 @@ if model:
     if picture:
         bytes_data = picture.getvalue()
 
-        # Decodificar con Pillow en lugar de cv2 (evita dependencia libGL)
-        #pil_img  = Image.open(io.BytesIO(bytes_data)).convert("RGB")
-        #np_img   = np.array(pil_img)   # array RGB
-
         pil_img = Image.open(io.BytesIO(bytes_data)).convert("RGB")
-        np_img  = np.array(pil_img)[..., ::-1]  # RGB → BGR para que YOLO procese bien
+        np_img  = np.array(pil_img)[..., ::-1]  # RGB → BGR
 
-        
         with st.spinner("Detectando objetos..."):
             try:
                 results = model(
@@ -62,8 +62,8 @@ if model:
 
         result    = results[0]
         boxes     = result.boxes
-        annotated = result.plot()              # devuelve BGR numpy array
-        annotated_rgb = annotated[:, :, ::-1]  # BGR → RGB sin cv2
+        annotated = result.plot()
+        annotated_rgb = annotated[:, :, ::-1]
 
         col1, col2 = st.columns(2)
 
